@@ -1,0 +1,17 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://docs.kedro.org/en/stable/data/data_catalog.html
+
+mox:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/104_SHT_SMD.txt
+  metadata:
+    kedro-viz:
+      layer: raw
+      preview_args:
+          nrows: 5
+
+mox_stacked:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/preprocess_mox_stacked.csv
