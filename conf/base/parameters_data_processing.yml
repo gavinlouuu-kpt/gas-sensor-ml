@@ -3,3 +3,6 @@
 #
 # Documentation for this file format can be found in "Parameters"
 # Link: https://docs.kedro.org/en/0.18.14/configuration/parameters.html
+
+# data_processing_params:
+#   bucket_size_ms: 100
