@@ -20,7 +20,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=create_model_input_table,
             inputs=['mox_bin',
-                'params:exposed_bins'],
+                'params:percentile_bins'],
             outputs="model_input_table",
             name="create_model_input_table_node",
             ),

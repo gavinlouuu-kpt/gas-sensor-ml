@@ -55,6 +55,31 @@ def preprocess_data_bin(mox: pd.DataFrame, num_bins: int) -> pd.DataFrame:
     mean_bin = _average_bin(bin_df)
     return mean_bin
 
+def get_percentile_data(df, percentile):
+    """
+    Returns the data up to the specified percentile based on the 'bin' column.
+
+    :param df: DataFrame containing the data
+    :param percentile: A float value between 0 and 1 representing the percentile
+    :return: DataFrame containing the data up to the specified percentile
+    """
+    # Calculate the bin index corresponding to the percentile
+    max_bin = int(percentile * df['bin'].max())
+
+    # Return data up to that bin
+    return df[df['bin'] <= max_bin]
+
+def _group_percentile (averaged: pd.DataFrame, percentile_bins: float) -> pd.DataFrame:
+    """
+    Returns the full specified percentile dataset
+    """
+    df_list = []
+    grouped = averaged.groupby('exp_no')
+    for name, group in grouped:
+        percentile_data = get_percentile_data(group, percentile_bins)
+        df_list.append(percentile_data)
+    return pd.concat(df_list)
+
 def _transpose_(df_set: pd.DataFrame) -> pd.DataFrame:
     transposed = df_set.pivot(index='exp_no', columns='bin', values='A1_Resistance')
     transposed.columns = ['bin_' + str(col) for col in transposed.columns]
@@ -65,6 +90,7 @@ def _remove_exp_no(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop(columns=['exp_no'])
     return df
 
-def create_model_input_table(mox_bin: pd.DataFrame, exposed_bins: int) -> pd.DataFrame:
-    mox_table = _remove_exp_no(_transpose_(mox_bin)).iloc[:exposed_bins]
+def create_model_input_table(mox_bin: pd.DataFrame, percentile_bins: float) -> pd.DataFrame:
+    selected_range = _group_percentile(mox_bin, percentile_bins)
+    mox_table = _remove_exp_no(_transpose_(selected_range))
     return mox_table

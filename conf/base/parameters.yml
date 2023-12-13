@@ -1,3 +1,5 @@
 
   num_bins: 1500
-  exposed_bins: 200
+  
+  # percentage of bin exposed to the model expressed in decimal 
+  percentile_bins: 0.1
