@@ -12,6 +12,6 @@ mox:
       preview_args:
           nrows: 5
 
-mox_bucket:
+mox_bin:
   type: pandas.CSVDataSet
-  filepath: data/02_intermediate/preprocess_mox_bucket.csv
+  filepath: data/02_intermediate/preprocess_mox_bin.csv
