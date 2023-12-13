@@ -4,17 +4,8 @@ generated using Kedro 0.18.14
 """
 
 from kedro.pipeline import Pipeline, pipeline, node
-from .nodes import preprocess_data_bin
+from .nodes import preprocess_data_bin, create_model_input_table
 
-# def create_pipeline(**kwargs) -> Pipeline:
-#     return pipeline([
-#         node(
-#             func=preprocess_data_bucket,
-#             inputs='mox',
-#             outputs='mox_bucket',
-#             name='data_processing'
-#         )
-#     ])
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([
@@ -25,5 +16,12 @@ def create_pipeline(**kwargs) -> Pipeline:
                 'params:num_bins'],
             outputs='mox_bin',
             name='data_processing_node'
-        )
+        ),
+        node(
+            func=create_model_input_table,
+            inputs=['mox_bin',
+                'params:exposed_bins'],
+            outputs="model_input_table",
+            name="create_model_input_table_node",
+            ),
     ])

@@ -54,3 +54,17 @@ def preprocess_data_bin(mox: pd.DataFrame, num_bins: int) -> pd.DataFrame:
     bin_df = _group_by_bin(df_stacked, num_bins)
     mean_bin = _average_bin(bin_df)
     return mean_bin
+
+def _transpose_(df_set: pd.DataFrame) -> pd.DataFrame:
+    transposed = df_set.pivot(index='exp_no', columns='bin', values='A1_Resistance')
+    transposed.columns = ['bin_' + str(col) for col in transposed.columns]
+    transposed.reset_index(inplace=True)
+    return transposed
+
+def _remove_exp_no(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.drop(columns=['exp_no'])
+    return df
+
+def create_model_input_table(mox_bin: pd.DataFrame, exposed_bins: int) -> pd.DataFrame:
+    mox_table = _remove_exp_no(_transpose_(mox_bin)).iloc[:exposed_bins]
+    return mox_table

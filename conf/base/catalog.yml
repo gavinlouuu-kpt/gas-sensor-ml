@@ -15,3 +15,7 @@ mox:
 mox_bin:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/preprocess_mox_bin.csv
+
+model_input_table:
+  type: pandas.CSVDataSet
+  filepath: data/03_primary/model_input_table.csv
