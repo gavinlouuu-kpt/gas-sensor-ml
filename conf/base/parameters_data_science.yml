@@ -3,3 +3,15 @@
 #
 # Documentation for this file format can be found in "Parameters"
 # Link: https://docs.kedro.org/en/0.18.14/configuration/parameters.html
+
+# model_options:
+#       num_classes: 1
+#       num_epochs: 100
+#       batch_size: 64
+#       learning_rate: 0.001
+#       test_size: 0.2
+#       random_state: 3
+#       input_size: 1 
+#       sequence_length: 2 # the window it trains with can be selected
+#       hidden_size: 128
+#       num_layers: 2

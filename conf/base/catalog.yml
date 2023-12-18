@@ -3,9 +3,19 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://docs.kedro.org/en/stable/data/data_catalog.html
 
+# mox:
+#   type: pandas.CSVDataSet
+#   filepath: data/01_raw/104_SHT_SMD.txt
+#   metadata:
+#     kedro-viz:
+#       layer: raw
+#       preview_args:
+#           nrows: 5
+
+# joined data
 mox:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/104_SHT_SMD.txt
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/104_113.pq
   metadata:
     kedro-viz:
       layer: raw
@@ -13,9 +23,14 @@ mox:
           nrows: 5
 
 mox_bin:
-  type: pandas.CSVDataSet
-  filepath: data/02_intermediate/preprocess_mox_bin.csv
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/preprocess_mox_bin.pq
+
+# model_input_table:
+#   type: pandas.ParquetDataset
+#   filepath: data/03_primary/model_input_table.pq
 
 model_input_table:
   type: pandas.CSVDataSet
   filepath: data/03_primary/model_input_table.csv
+  
