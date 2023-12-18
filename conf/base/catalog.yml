@@ -30,7 +30,13 @@ mox_bin:
 #   type: pandas.ParquetDataset
 #   filepath: data/03_primary/model_input_table.pq
 
+# smaller csv dataset
 model_input_table:
   type: pandas.CSVDataSet
   filepath: data/03_primary/model_input_table.csv
+
+lstm_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/lstm_model.pth
+  versioned: true
   
