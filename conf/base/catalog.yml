@@ -12,15 +12,25 @@
 #       preview_args:
 #           nrows: 5
 
-# joined data
+# single file
 mox:
-  type: pandas.ParquetDataset
-  filepath: data/02_intermediate/104_113.pq
+  type: pandas.CSVDataset
+  filepath: data/01_raw/113_SHT_SMD.txt
   metadata:
     kedro-viz:
       layer: raw
       preview_args:
           nrows: 5
+
+# joined data
+# mox:
+#   type: pandas.ParquetDataset
+#   filepath: data/02_intermediate/108_113.pq
+#   metadata:
+#     kedro-viz:
+#       layer: raw
+#       preview_args:
+#           nrows: 5
 
 mox_bin:
   type: pandas.ParquetDataset
