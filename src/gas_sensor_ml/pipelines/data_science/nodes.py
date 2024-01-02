@@ -17,6 +17,15 @@ from sklearn.preprocessing import StandardScaler
 from torch.utils.data import TensorDataset, DataLoader
 
 device = torch.device('mps')
+
+def _clean_NaN (X_dataset: pd.DataFrame, model_input_table: pd.DataFrame) -> pd.DataFrame:
+    X_dataset_df = pd.DataFrame(X_dataset, columns=model_input_table.columns[:-1])
+    # Fill NaN values with the mean of the column
+    X_dataset_df.fillna(X_dataset_df.mean(), inplace=True)
+    # Convert back to numpy arrays
+    X_dataset = X_dataset_df.values
+    return X_dataset
+
 def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tensor:
     # Split data into features and target
     X = model_input_table[model_input_table.columns[:-1]].values  # Assuming last column is the target
@@ -30,6 +39,10 @@ def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tenso
         X_train, y_train, 
         test_size = parameters["val_size"], random_state = parameters["random_state"])
     
+    X_train = _clean_NaN(X_train, model_input_table)
+    X_val = _clean_NaN(X_val, model_input_table)
+    X_test = _clean_NaN(X_test, model_input_table)
+
     # Initialize StandardScaler
     scaler = StandardScaler()
     # Fit on training data
@@ -185,6 +198,10 @@ def evaluate_model(lstm_model, X_test_tensor: torch.tensor, y_test_tensor: torch
 
     test_dataset = TensorDataset(X_test_tensor.to(device), y_test_tensor.to(device))
     test_loader = DataLoader(dataset=test_dataset, batch_size=parameters['batch_size'], shuffle=True)
+
+    print("Number of NaN values in test data:")
+    print(pd.DataFrame(X_test_tensor.numpy()).isna().sum())
+    print(pd.DataFrame(y_test_tensor.numpy()).isna().sum())
 
 
 
