@@ -13,24 +13,24 @@
 #           nrows: 5
 
 # single file
-mox:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/113_SHT_SMD.txt
-  metadata:
-    kedro-viz:
-      layer: raw
-      preview_args:
-          nrows: 5
-
-# joined data
 # mox:
-#   type: pandas.ParquetDataset
-#   filepath: data/02_intermediate/108_113.pq
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/104_SHT_SMD.txt
 #   metadata:
 #     kedro-viz:
 #       layer: raw
 #       preview_args:
 #           nrows: 5
+
+# joined data
+mox:
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/104_107.pq
+  metadata:
+    kedro-viz:
+      layer: raw
+      preview_args:
+          nrows: 5
 
 mox_bin:
   type: pandas.ParquetDataset
@@ -42,11 +42,11 @@ mox_bin:
 
 # smaller csv dataset
 model_input_table:
-  type: pandas.CSVDataSet
-  filepath: data/03_primary/model_input_table.csv
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/model_input_table.pq
 
 lstm_model:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/06_models/lstm_model.pth
   versioned: true
   

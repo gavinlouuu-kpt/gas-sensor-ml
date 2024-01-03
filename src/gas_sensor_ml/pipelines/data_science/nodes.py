@@ -26,6 +26,15 @@ def _clean_NaN (X_dataset: pd.DataFrame, model_input_table: pd.DataFrame) -> pd.
     X_dataset = X_dataset_df.values
     return X_dataset
 
+# forward fill NaN values
+def _ffill_NaN (X_dataset: pd.DataFrame, model_input_table: pd.DataFrame) -> pd.DataFrame:
+    X_dataset_df = pd.DataFrame(X_dataset, columns=model_input_table.columns[:-1])
+    # Fill NaN values with the mean of the column
+    X_dataset_df.ffill(inplace=True)
+    # Convert back to numpy arrays
+    X_dataset = X_dataset_df.values
+    return X_dataset
+
 def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tensor:
     # Split data into features and target
     X = model_input_table[model_input_table.columns[:-1]].values  # Assuming last column is the target
@@ -39,9 +48,9 @@ def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tenso
         X_train, y_train, 
         test_size = parameters["val_size"], random_state = parameters["random_state"])
     
-    X_train = _clean_NaN(X_train, model_input_table)
-    X_val = _clean_NaN(X_val, model_input_table)
-    X_test = _clean_NaN(X_test, model_input_table)
+    X_train = _ffill_NaN(X_train, model_input_table)
+    X_val = _ffill_NaN(X_val, model_input_table)
+    X_test = _ffill_NaN(X_test, model_input_table)
 
     # Initialize StandardScaler
     scaler = StandardScaler()
@@ -164,11 +173,21 @@ def train_model(X_train_tensor: torch.tensor, y_train_tensor: torch.tensor,
                 bins = bins.reshape(-1, parameters['sequence_length'], parameters['input_size']).to(device)
                 target = target.unsqueeze(1).to(device)  # Add an extra dimension to match outputs
                 outputs = model(bins)
+                # print("Shape of output", outputs.shape)
+                # print("Shape of target", target.shape)
                 loss = criterion(outputs, target)
                 total_loss += loss.item()
                 count += 1
             rmse = np.sqrt(total_loss / count)
-            print(f'Epoch [{epoch+1}/{num_epochs}], RMSE on validation data: {rmse}')
+            print(
+               f'Epoch [{epoch+1}/{num_epochs}], RMSE on validation data: {rmse}\n', 
+                "Ground truth:", target.cpu().numpy(),
+                "Predictions:", outputs.cpu().detach().numpy()
+            )
+            # print(
+            #     f'Epoch [{epoch+1}/{num_epochs}], RMSE on validation data: {rmse}', 
+            #       "Ground truth:", target.cpu().numpy()
+            #       )  # Print ground truth values)
         model.train()  # Set the model back to training mode
     # Save the model after training
     # model_path = '../data/06_models/model.pth'
@@ -199,9 +218,9 @@ def evaluate_model(lstm_model, X_test_tensor: torch.tensor, y_test_tensor: torch
     test_dataset = TensorDataset(X_test_tensor.to(device), y_test_tensor.to(device))
     test_loader = DataLoader(dataset=test_dataset, batch_size=parameters['batch_size'], shuffle=True)
 
-    print("Number of NaN values in test data:")
-    print(pd.DataFrame(X_test_tensor.numpy()).isna().sum())
-    print(pd.DataFrame(y_test_tensor.numpy()).isna().sum())
+    # print("Number of NaN values in test data:")
+    # print(pd.DataFrame(X_test_tensor.numpy()).isna().sum())
+    # print(pd.DataFrame(y_test_tensor.numpy()).isna().sum())
 
 
 

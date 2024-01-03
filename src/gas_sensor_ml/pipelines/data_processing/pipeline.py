@@ -13,14 +13,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             func=preprocess_data_bin,
             inputs=[
                 'mox',
-                'params:num_bins'],
+                'params:process_options'],
             outputs='mox_bin',
             name='data_processing_node'
         ),
         node(
             func=create_model_input_table,
             inputs=['mox_bin',
-                'params:percentile_bins'],
+                'params:process_options'],
             outputs="model_input_table",
             name="create_model_input_table_node",
             ),
