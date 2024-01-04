@@ -50,3 +50,12 @@ lstm_model:
   filepath: data/06_models/lstm_model.pth
   versioned: true
   
+"{subtype}_lstm_model.lstm_model":
+  type: pickle.PickleDataset
+  filepath: data/06_models/lstm_{subtype}.pickle
+  versioned: true
+
+# trimmed_lstm_model.lstm_model:
+#   type: pickle.PickleDataset
+#   filepath: data/06_models/lstm_trimmed.pickle
+#   versioned: true
