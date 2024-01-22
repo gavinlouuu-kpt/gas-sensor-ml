@@ -7,7 +7,7 @@
 # data_processing_params:
 #   bucket_size_ms: 100
 process_options:
-      percentile_bins: 0.1
+      percentile_bins: 1
       num_bins: 1500
       target: 'A1_Sensor'
       ground_t: 'A1_Resistance'

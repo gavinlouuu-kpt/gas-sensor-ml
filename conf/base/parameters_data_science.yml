@@ -6,13 +6,13 @@
 complete_lstm_model:
       model_options:
             num_classes: 1
-            num_epochs: 20
+            num_epochs: 100
             batch_size: 32
             learning_rate: 0.001
             test_size: 0.2
             random_state: 3
             input_size: 1 
-            sequence_length: 150 # the window it trains with can be selected
+            sequence_length: 1500 # the window it trains with can be selected
             hidden_size: 128
             num_layers: 2
             val_size: 0.2
@@ -20,13 +20,13 @@ complete_lstm_model:
 trimmed_lstm_model:
       model_options:
             num_classes: 1
-            num_epochs: 20
+            num_epochs: 50
             batch_size: 32
             learning_rate: 0.001
             test_size: 0.2
             random_state: 3
             input_size: 1 
-            sequence_length: 150 # the window it trains with can be selected
+            sequence_length: 1500 # the window it trains with can be selected
             hidden_size: 128
             num_layers: 2
             val_size: 0.2
