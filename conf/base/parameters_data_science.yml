@@ -14,7 +14,7 @@ complete_lstm_model:
             input_size: 1 
             sequence_length: 1500 # the window it trains with can be selected
             hidden_size: 128
-            num_layers: 2
+            num_layers: 4
             val_size: 0.2
 
 trimmed_lstm_model:
