@@ -3,6 +3,10 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://docs.kedro.org/en/stable/data/data_catalog.html
 
+test_mox:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/104_SHT_SMD.txt
+
 mox:
   type: pandas.ParquetDataset
   filepath: data/02_intermediate/v2_mox.pq
