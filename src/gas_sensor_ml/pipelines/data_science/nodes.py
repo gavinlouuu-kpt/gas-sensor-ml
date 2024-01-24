@@ -36,9 +36,13 @@ def _ffill_NaN (X_dataset: pd.DataFrame, model_input_table: pd.DataFrame) -> pd.
     return X_dataset
 
 def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tensor:
+    _clean_input = model_input_table.ffill()
+    # convert to numpy array
+    # _clean_input = _clean_input.values
+    
     # Split data into features and target
-    X = model_input_table[model_input_table.columns[:-1]].values  # Assuming last column is the target
-    y = model_input_table[model_input_table.columns[-1]].values
+    X = _clean_input[_clean_input.columns[:-1]].values  # Assuming last column is the target
+    y = _clean_input[_clean_input.columns[-1]].values
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size = parameters["test_size"], random_state = parameters["random_state"])
@@ -48,9 +52,9 @@ def split_data(model_input_table: pd.DataFrame, parameters: Dict) -> torch.tenso
         X_train, y_train, 
         test_size = parameters["val_size"], random_state = parameters["random_state"])
     
-    X_train = _ffill_NaN(X_train, model_input_table)
-    X_val = _ffill_NaN(X_val, model_input_table)
-    X_test = _ffill_NaN(X_test, model_input_table)
+    # X_train = _ffill_NaN(X_train, model_input_table)
+    # X_val = _ffill_NaN(X_val, model_input_table)
+    # X_test = _ffill_NaN(X_test, model_input_table)
 
     # Initialize StandardScaler
     scaler = StandardScaler()
@@ -144,23 +148,23 @@ def train_model(X_train_tensor: torch.tensor, y_train_tensor: torch.tensor,
     for epoch in range(parameters['num_epochs']):
         for i, (bins, target) in enumerate(train_loader):  
             bins = bins.reshape(-1, parameters['sequence_length'], parameters['input_size']).to(device)
-            target = target.to(device)
+            target = target.squeeze().to(device)
         
         # Forward pass
-        outputs = model(bins)
+            outputs = model(bins)
         # Example of reshaping/squeezing if applicable
-        outputs = outputs.squeeze()  # Removes dimensions of size 1
-        outputs = outputs[:64]  # Adjust if you need to slice the outputs
+            outputs = outputs.squeeze()  # Removes dimensions of size 1
+            # outputs = outputs[:64]  # Adjust if you need to slice the outputs
 
-        target = target.unsqueeze(1).to(device)  # Add an extra dimension to match outputs
-        loss = criterion(outputs, target)
+            # target = target.unsqueeze(1).to(device)  # Add an extra dimension to match outputs
+            loss = criterion(outputs, target)
         
         # Backward and optimize
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-        num_epochs = parameters['num_epochs']
+            num_epochs = parameters['num_epochs']
         if (i+1) % 100 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
 
@@ -171,10 +175,10 @@ def train_model(X_train_tensor: torch.tensor, y_train_tensor: torch.tensor,
             count = 0
             for bins, target in val_loader: 
                 bins = bins.reshape(-1, parameters['sequence_length'], parameters['input_size']).to(device)
-                target = target.unsqueeze(1).to(device)  # Add an extra dimension to match outputs
+                target = target.squeeze().to(device)  # Add an extra dimension to match outputs
                 outputs = model(bins)
-                # print("Shape of output", outputs.shape)
-                # print("Shape of target", target.shape)
+                outputs = outputs.squeeze()
+         
                 loss = criterion(outputs, target)
                 total_loss += loss.item()
                 count += 1
@@ -229,8 +233,9 @@ def evaluate_model(lstm_model, X_test_tensor: torch.tensor, y_test_tensor: torch
             count = 0
             for bins, target in test_loader:  # Replace with your validation loader
                 bins = bins.reshape(-1, parameters['sequence_length'], parameters['input_size']).to(device)
-                target = target.unsqueeze(1).to(device)  # Add an extra dimension to match outputs
+                target = target.squeeze().to(device)  # Add an extra dimension to match outputs
                 outputs = inf_model(bins)
+                outputs = outputs.squeeze()
                 loss = criterion(outputs, target)
                 total_loss += loss.item()
                 count += 1
