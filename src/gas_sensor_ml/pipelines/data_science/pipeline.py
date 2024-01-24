@@ -18,6 +18,14 @@ def create_pipeline(**kwargs) -> Pipeline:
                           "y_train_tensor", "y_val_tensor", "y_test_tensor"],
                 name="split_data_node",
             ),
+            # node(
+            #     func=study_model,
+            #     inputs=["X_train_tensor", "y_train_tensor",
+            #             "X_val_tensor", "y_val_tensor",
+            #             "params:model_options"],
+            #     outputs="trial",
+            #     name="study_model_node",
+            # ),
             node(
                 func=train_model,
                 inputs=["X_train_tensor", "y_train_tensor",
