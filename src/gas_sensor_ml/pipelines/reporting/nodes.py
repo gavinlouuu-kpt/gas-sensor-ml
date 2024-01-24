@@ -174,10 +174,18 @@ def objective(trial, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor,
     return rmse
             # print(f'Epoch [{epoch+1}/{num_epochs}], RMSE on validation data: {rmse}')
 
-def study_model(X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor, parameters):
+def study_model(X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor, parameters, study_options):
     study = optuna.create_study(direction="minimize")
-    # study.optimize(objective, n_trials=5, timeout=600)
-    study.optimize(lambda trial: objective(trial, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor, parameters), n_trials=1, timeout=600)
+    study.optimize(lambda trial: objective(trial, 
+                                           X_train_tensor, 
+                                           y_train_tensor, 
+                                           X_val_tensor, 
+                                           y_val_tensor, 
+                                           parameters), 
+                                        #    n_trials=1, 
+                                        #    timeout=600)
+                                           n_trials=study_options['n_trials'], 
+                                           timeout=study_options['timeout'])
 
     pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
     complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
