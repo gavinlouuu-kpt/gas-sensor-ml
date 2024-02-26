@@ -6,7 +6,7 @@
 complete_lstm_model:
       model_options:
             num_classes: 1
-            num_epochs: 10
+            num_epochs: 70
             batch_size: 32
             learning_rate: 0.001
             test_size: 0.2
